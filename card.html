@@ -1,472 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raksha Bandhan Photo Gallery</title>
-    <meta name="description" content="A curated gallery of beautiful sibling photos and heartfelt messages for Raksha Bandhan.">
-    <meta name="keywords" content="Rakhi gallery, photo gallery, siblings, memories, aesthetic, animation">
-    
+    <title>Creative Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Poppins:wght@300;400;600;700&family=Sacramento&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-</head>
-
-<body>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variables for a refined theme */
-        :root {
-            --primary-color: #0d1b2a;       /* Deep Sapphire */
-            --secondary-color: #1b263b;     /* Muted Blue-Grey */
-            --accent-color: #e0f2f1;        /* Soft Mint */
-            --gold-color: #ffd700;          /* Gold for accents */
-            --text-color: #ffffff;          /* White Text */
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --neon-glow: 0 0 8px var(--gold-color), 0 0 15px var(--gold-color);
-        }
-
-        /* Base and Global Styles */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body {
-            width: 100%;
-            height: 100%;
-        }
         body {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-color);
-            background-color: var(--primary-color);
-            position: relative;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
-            overflow-y: auto;
-            perspective: 1000px; /* For 3D transforms */
+            background-color: #0b1a2e;
         }
 
-        /* --- Animated Background Canvas (Starfield) --- */
-        #particle-canvas {
+        .hover-effect {
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .hover-effect:hover {
+            transform: translateY(-5px);
+            background-color: #172a45;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.8;
-        }
-
-        /* --- Intro Banner --- */
-        .intro-banner {
-            text-align: center;
-            padding: 4rem 1rem 2rem;
-            position: relative;
-            z-index: 10;
-        }
-        .heading-glow {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--gold-color);
-            text-shadow: var(--neon-glow);
-            animation: fadeInDown 1s ease-out;
-        }
-        .subtext {
-            font-size: clamp(1rem, 3vw, 1.2rem);
-            font-weight: 300;
-            opacity: 0;
-            animation: fadeInUp 1.2s ease-out forwards;
-            animation-delay: 0.5s;
-        }
-
-        /* --- Photo Gallery (Masonry Grid) --- */
-        .photo-gallery {
-            column-count: 3;
-            column-gap: 3rem;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        @media (max-width: 1200px) { .photo-gallery { column-count: 2; } }
-        @media (max-width: 768px) { .photo-gallery { column-count: 1; } }
-
-        .photo-card-wrapper {
-            break-inside: avoid-column;
-            margin-bottom: 3rem;
-            transform: translateY(50px) scale(0.9);
-            opacity: 0;
-            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .photo-card-wrapper.visible {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-        }
-
-        /* --- Updated Photo Card Styles (Rectangular) --- */
-        .photo-card {
-            position: relative;
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-style: preserve-3d;
-            
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .photo-card:hover {
-            transform: translateY(-15px) rotateX(5deg);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px var(--accent-color);
-        }
-        
-        /* ---- Image-specific changes for square/rectangular images ---- */
-        .photo-image-container {
-            width: 100%;
-            padding-top: 100%; /* Creates a square aspect ratio (1:1) */
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px 15px 0 0;
-        }
-        .photo-image {
-            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            display: block;
-            object-fit: cover; /* Ensures image covers the container without distortion */
-            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+            z-index: 50;
         }
-        .photo-card:hover .photo-image {
-            transform: scale(1.1);
-        }
-        /* ------------------------------------------------------------- */
 
-        .photo-content {
-            padding: 1.5rem;
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-            position: relative;
+        .overlay-content {
+            transform: translateY(100%);
+            transition: transform 0.5s ease-in-out;
         }
-        .photo-card:hover .photo-content {
-            background-color: rgba(0, 0, 0, 0.3);
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .overlay.active .overlay-content {
+            transform: translateY(0);
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: transform 0.5s ease-in-out;
         }
         
-        .photo-card::before {
+        .profile-image-container:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .profile-image-container::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            border: 3px solid var(--gold-color);
-            border-radius: 15px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
-            box-shadow: 0 0 10px var(--gold-color), 0 0 20px var(--gold-color), 0 0 30px var(--gold-color);
-        }
-        .photo-card:hover::before {
-            opacity: 1;
-        }
-
-        .photo-message {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: var(--text-color);
-            margin-bottom: 0.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
-            animation-delay: 0.2s;
-        }
-        .photo-signature {
-            font-family: 'Sacramento', cursive;
-            font-size: 1.5rem;
-            color: var(--accent-color);
-            margin-top: 0.5rem;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
-            animation-delay: 0.4s;
-        }
-        
-        /* --- Modal for Photo Customization --- */
-        .modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-        }
-        .modal.open {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            animation: modalPop 0.5s forwards;
-        }
-        .modal-photo-preview {
-            width: auto;
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        }
-        .close-btn {
-            position: absolute;
-            top: 1rem; right: 1rem;
-            font-size: 2rem;
-            color: var(--text-color);
-            background: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .close-btn:hover { transform: rotate(90deg); }
-
-        /* --- Floating Elements --- */
-        .floating-element {
-            position: fixed;
-            width: 50px; height: auto;
-            animation: float 25s infinite ease-in-out;
+            box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1), 0 0 0 20px rgba(255, 255, 255, 0.05);
             pointer-events: none;
-            z-index: -1;
-            opacity: 0.6;
         }
-        .rakhi { top: 10%; left: 15%; animation-duration: 25s; }
-        .sweets { bottom: 5%; left: 30%; animation-duration: 30s; animation-delay: 5s; }
-        .flower { top: 20%; right: 10%; animation-duration: 22s; animation-delay: 2s; }
         
-        /* --- Animations --- */
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(2vw, -2vh) rotate(5deg); } 100% { transform: translate(0, 0) rotate(0deg); } }
-        @keyframes modalPop { to { transform: scale(1); opacity: 1; } }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #4b5563;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #6366f1;
+            transition: width 1s ease-in-out;
+        }
     </style>
+</head>
 
-    <main>
-        <canvas id="particle-canvas"></canvas>
+<body class="text-white">
 
-        <img src="https://static.vecteezy.com/system/resources/thumbnails/041/924/172/small_2x/ai-generated-3d-style-colorful-flower-isolated-on-transparent-background-free-png.png" alt="Rakhi" class="floating-element rakhi" style="width: 60px;">
-        <img src="https://static.vecteezy.com/system/resources/thumbnails/041/924/172/small_2x/ai-generated-3d-style-colorful-flower-isolated-on-transparent-background-free-png.png" alt="Sweets" class="floating-element sweets">
-        <img src="https://static.vecteezy.com/system/resources/thumbnails/041/924/172/small_2x/ai-generated-3d-style-colorful-flower-isolated-on-transparent-background-free-png.png" alt="Flower" class="floating-element flower">
+    <!-- Main Page Content -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-8">
 
-        <section class="intro-banner">
-            <h1 class="heading-glow">Memories Photo Gallery</h1>
-            <p class="subtext">A collection of beautiful moments to cherish forever.</p>
-        </section>
+        <!-- Navigation Bar -->
+        <header class="w-full max-w-5xl flex items-center justify-between p-4 mb-16 rounded-full bg-slate-800 bg-opacity-50 backdrop-blur-sm shadow-lg hover-effect">
+            <h1 class="text-xl md:text-2xl font-bold tracking-wide">
+                <a href="#" class="text-indigo-400">JANE DOE</a>
+            </h1>
+            <nav class="space-x-4 md:space-x-8">
+                <a href="#" class="text-sm md:text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300 nav-link" data-target="about">About</a>
+                <a href="#" class="text-sm md:text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300 nav-link" data-target="portfolio">Portfolio</a>
+                <a href="#" class="text-sm md:text-base text-gray-300 hover:text-indigo-400 transition-colors duration-300 nav-link" data-target="contact">Contact</a>
+            </nav>
+        </header>
 
-        <section class="photo-gallery" id="photo-gallery">
-            </section>
-    </main>
+        <!-- Hero Section -->
+        <main class="w-full max-w-5xl flex flex-col md:flex-row items-center justify-between gap-12 md:gap-24 px-4">
+            <div class="profile-image-container flex-shrink-0">
+                <!-- Placeholder image with a solid background and text -->
+                <img src="https://placehold.co/250x250/333333/FFFFFF?text=PROFILE" alt="Profile Image" class="w-full h-full object-cover rounded-full">
+            </div>
 
-    <div class="modal" id="photo-modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-modal">&times;</span>
-            <img class="modal-photo-preview" id="modal-photo-preview">
+            <div class="text-center md:text-left">
+                <h2 class="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-sky-400">
+                    Creative Designer
+                </h2>
+                <h3 class="text-xl md:text-2xl font-light text-gray-300 mb-6">
+                    Building beautiful digital experiences.
+                </h3>
+                <p class="text-base md:text-lg text-gray-400 max-w-xl mx-auto md:mx-0">
+                    A passionate and innovative developer with a keen eye for design. I turn ideas into elegant and functional products.
+                </p>
+                <div class="mt-8">
+                    <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover-effect nav-link" data-target="portfolio">
+                        View My Work
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- My Skills Section -->
+    <section class="w-full max-w-5xl mx-auto py-16 px-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">My Skills</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Skill: Photoshop -->
+            <div class="p-6 rounded-xl bg-slate-800 bg-opacity-50 shadow-lg hover-effect">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xl font-medium text-white">Photoshop</span>
+                    <span class="text-lg font-bold text-indigo-400">90%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 90%;"></div>
+                </div>
+            </div>
+            <!-- Skill: Illustrator -->
+            <div class="p-6 rounded-xl bg-slate-800 bg-opacity-50 shadow-lg hover-effect">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xl font-medium text-white">Illustrator</span>
+                    <span class="text-lg font-bold text-indigo-400">70%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 70%;"></div>
+                </div>
+            </div>
+            <!-- Skill: CorelDraw -->
+            <div class="p-6 rounded-xl bg-slate-800 bg-opacity-50 shadow-lg hover-effect">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xl font-medium text-white">CorelDraw</span>
+                    <span class="text-lg font-bold text-indigo-400">80%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 80%;"></div>
+                </div>
+            </div>
+            <!-- Skill: Filmora -->
+            <div class="p-6 rounded-xl bg-slate-800 bg-opacity-50 shadow-lg hover-effect">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xl font-medium text-white">Filmora</span>
+                    <span class="text-lg font-bold text-indigo-400">75%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 75%;"></div>
+                </div>
+            </div>
+            <!-- Skill: Canva -->
+            <div class="p-6 rounded-xl bg-slate-800 bg-opacity-50 shadow-lg hover-effect">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xl font-medium text-white">Canva</span>
+                    <span class="text-lg font-bold text-indigo-400">80%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" style="width: 80%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overlay "Sub-Page" -->
+    <div id="overlay" class="overlay flex items-center justify-center p-8">
+        <div class="overlay-content w-full max-w-4xl p-10 bg-slate-800 rounded-2xl shadow-2xl relative">
+            
+            <button id="close-btn" class="absolute top-4 right-4 text-white text-3xl hover:text-gray-400 transition-colors duration-300">
+                &times;
+            </button>
+            
+            <h2 id="overlay-title" class="text-4xl font-bold mb-6 text-center text-indigo-400"></h2>
+            <div id="overlay-body" class="text-gray-300 text-lg leading-relaxed">
+                <!-- Content will be injected here via JavaScript -->
+            </div>
         </div>
     </div>
 
-    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('overlay');
+            const closeBtn = document.getElementById('close-btn');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const overlayTitle = document.getElementById('overlay-title');
+            const overlayBody = document.getElementById('overlay-body');
 
-            // --- Photo Data with specific image URLs ---
-            const photoData = [
-                {
-                    image: 'krish.png',
-                    message: "You’re not just my sibling, you’re my forever built-in best friend.",
-                    signature: "Your Loving Brother"
+            const pageContent = {
+                about: {
+                    title: 'About Me',
+                    body: `
+                        <p class="mb-4">Hello! I'm Jane Doe, a freelance designer and developer with a passion for creating engaging and user-friendly digital experiences. I specialize in crafting clean, modern interfaces that combine aesthetics with functionality.</p>
+                        <p class="mb-4">My journey began with a love for art and problem-solving, which naturally led me to the world of web design and development. I believe that great design is not just about how something looks, but also about how it works and feels to the user.</p>
+                        <p>When I'm not coding or designing, I enjoy hiking, photography, and exploring new technologies. I'm always looking for new challenges and opportunities to grow and learn.</p>
+                    `
                 },
-                {
-                    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS37Hxq6K2N43A94co0c8acHm3gopK4XFXg4g5_piJN7puFLBhHcY9xi5V0RtoUSNP2sYM&usqp=CAU',
-                    message: "A thread that ties memories, childhood fights and endless love.",
-                    signature: "Your Little Sister"
+                portfolio: {
+                    title: 'My Portfolio',
+                    body: `
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="p-6 bg-slate-700 rounded-lg hover-effect">
+                                <h4 class="font-bold text-xl text-indigo-300">Project Alpha</h4>
+                                <p class="text-sm text-gray-400 mt-2">A sleek e-commerce platform built with React and Tailwind CSS.</p>
+                            </div>
+                            <div class="p-6 bg-slate-700 rounded-lg hover-effect">
+                                <h4 class="font-bold text-xl text-indigo-300">Project Beta</h4>
+                                <p class="text-sm text-gray-400 mt-2">A mobile-first application for managing personal finances.</p>
+                            </div>
+                            <div class="p-6 bg-slate-700 rounded-lg hover-effect">
+                                <h4 class="font-bold text-xl text-indigo-300">Project Gamma</h4>
+                                <p class="text-sm text-gray-400 mt-2">A data visualization dashboard for a leading tech company.</p>
+                            </div>
+                        </div>
+                    `
                 },
-                {
-                    image: 'https://res.cloudinary.com/jerrick/image/upload/c_scale,f_jpg,q_auto/645c99dd5de7f1001d9f9a92.png',
-                    message: "From fighting for the TV remote to fighting for each other—Raksha Bandhan forever!",
-                    signature: "Your Partner-in-Crime"
-                },
-                {
-                    image: 'https://www.drikpanchang.com/images/events/raksha-bandhan/3x/raksha_bandhan.png',
-                    message: "May our sacred bond of love and trust grow stronger each passing year. Happy Raksha Bandhan!",
-                    signature: "From Your Dear Sibling"
-                },
-                {
-                    image: 'https://images.stockcake.com/public/0/c/d/0cddd6f0-8741-47b9-af4c-b260621b70bb_medium/cozy-evening-fun-stockcake.jpg',
-                    message: "The love we share is a light that brightens my life. Happy Rakhi to the best sibling!",
-                    signature: "With Love"
-                },
-                {
-                    image: 'https://www.shutterstock.com/image-vector/raksha-bandhan-rakhi-festival-background-260nw-2325335609.jpg',
-                    message: "No matter where life takes us, you’ll always be in my heart. Happy Raksha Bandhan!",
-                    signature: "Your Biggest Fan"
+                contact: {
+                    title: 'Get In Touch',
+                    body: `
+                        <p class="text-center mb-6">I'm always excited to connect with new people and discuss potential projects. Feel free to reach out to me via email or social media.</p>
+                        <div class="flex flex-col items-center space-y-4">
+                            <a href="mailto:jane.doe@example.com" class="text-lg md:text-xl text-indigo-400 hover:underline">jane.doe@example.com</a>
+                            <a href="#" class="text-lg md:text-xl text-gray-300 hover:text-white transition-colors duration-300">LinkedIn</a>
+                            <a href="#" class="text-lg md:text-xl text-gray-300 hover:text-white transition-colors duration-300">GitHub</a>
+                        </div>
+                    `
                 }
-            ];
-
-            // --- DOM Elements ---
-            const gallery = document.getElementById('photo-gallery');
-            const modal = document.getElementById('photo-modal');
-            const closeModalBtn = document.getElementById('close-modal');
-            const modalPhotoPreview = document.getElementById('modal-photo-preview');
-
-            // --- 1. Dynamic Photo Generation ---
-            photoData.forEach((photo, index) => {
-                const photoWrapper = document.createElement('div');
-                photoWrapper.classList.add('photo-card-wrapper');
-                photoWrapper.dataset.index = index;
-                photoWrapper.innerHTML = `
-                    <div class="photo-card">
-                        <div class="photo-image-container">
-                            <img class="photo-image" src="${photo.image}" alt="Sibling Photo">
-                        </div>
-                        <div class="photo-content">
-                            <p class="photo-message">${photo.message}</p>
-                            <p class="photo-signature">${photo.signature}</p>
-                        </div>
-                    </div>
-                `;
-                gallery.appendChild(photoWrapper);
-            });
-
-            // --- 2. Intersection Observer for Card Animations ---
-            const photoWrappers = document.querySelectorAll('.photo-card-wrapper');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.2
             };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        const message = entry.target.querySelector('.photo-message');
-                        const signature = entry.target.querySelector('.photo-signature');
-                        
-                        message.style.opacity = 1;
-                        signature.style.opacity = 1;
-                        
-                        observer.unobserve(entry.target);
-                    }
+
+            const showOverlay = (target) => {
+                const content = pageContent[target];
+                if (content) {
+                    overlayTitle.textContent = content.title;
+                    overlayBody.innerHTML = content.body;
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevents scrolling behind the overlay
+                }
+            };
+
+            const hideOverlay = () => {
+                overlay.classList.remove('active');
+                document.body.style.overflow = ''; // Re-enables scrolling
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = e.currentTarget.dataset.target;
+                    showOverlay(target);
                 });
-            }, observerOptions);
-
-            photoWrappers.forEach(wrapper => {
-                observer.observe(wrapper);
             });
 
-            // --- 3. Modal Logic ---
-            gallery.addEventListener('click', (e) => {
-                const photoCardWrapper = e.target.closest('.photo-card-wrapper');
-                if (photoCardWrapper) {
-                    const index = photoCardWrapper.dataset.index;
-                    const photo = photoData[index];
-                    
-                    modalPhotoPreview.src = photo.image;
-                    
-                    modal.classList.add('open');
-                }
-            });
+            closeBtn.addEventListener('click', hideOverlay);
 
-            closeModalBtn.addEventListener('click', () => {
-                modal.classList.remove('open');
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    hideOverlay();
+                }
             });
-            
-            // --- Canvas-based Particle Effect ---
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            let particles = [];
-            let mouse = { x: null, y: null };
-            window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-
-            class Particle {
-                constructor(x, y, size, color) {
-                    this.x = x; this.y = y; this.size = size; this.color = color;
-                    this.speedX = Math.random() * 0.5 - 0.25;
-                    this.speedY = Math.random() * 0.5 - 0.25;
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = this.color;
-                    ctx.fill();
-                }
-                update() {
-                    this.x += this.speedX; this.y += this.speedY;
-                    const dx = this.x - mouse.x; const dy = this.y - mouse.y;
-                    const distance = Math.sqrt(dx*dx + dy*dy);
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const maxDistance = 100;
-                    const force = (maxDistance - distance) / maxDistance;
-                    if (force > 0) {
-                        this.x += forceDirectionX * force * 5; this.y += forceDirectionY * force * 5;
-                    }
-                    if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                    if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-                    this.draw();
-                }
-            }
-            function initParticles() {
-                particles = [];
-                const numberOfParticles = 300;
-                const colors = ['#ffd700', '#e0f2f1', '#ffffff'];
-                for (let i = 0; i < numberOfParticles; i++) {
-                    const size = Math.random() * 3 + 1;
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * canvas.height;
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    particles.push(new Particle(x, y, size, color));
-                }
-            }
-            function animateParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let i = 0; i < particles.length; i++) { particles[i].update(); }
-                requestAnimationFrame(animateParticles);
-            }
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                initParticles();
-            });
-            initParticles();
-            animateParticles();
         });
     </script>
 </body>
 
 </html>
-
-
-
-
-
